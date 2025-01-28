@@ -21,7 +21,7 @@ jobs:
           fi
       - name: Deploy Website
         run: |
-          rsync -avz --delete ./build/ user@your-server:/path/to/website
+          rsync -avz --delete ./build/ user@192.168.0.104:/var/www/website
         env:
           SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
       - name: Notify Success
