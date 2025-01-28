@@ -1,1 +1,29 @@
+name: Update Website
+on:
+  push:
+    branches:
+      - main  # Replace with the branch you want to monitor
+jobs:
+  update-website:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v3
+      - name: Install Dependencies
+        run: |
+          if [ -f package.json ]; then
+            npm install
+          fi
+      - name: Build Website
+        run: |
+          if [ -f package.json ]; then
+            npm run build
+          fi
+      - name: Deploy Website
+        run: |
+          rsync -avz --delete ./build/ user@your-server:/path/to/website
+        env:
+          SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}
+      - name: Notify Success
+        run: echo "Website successfully updated!"
 
