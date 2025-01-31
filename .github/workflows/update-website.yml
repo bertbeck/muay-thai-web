@@ -7,7 +7,8 @@ on:
 
 jobs:
   update-website:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest  # Using Ubuntu runner to handle SSH and rsync easily
+
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
@@ -24,17 +25,19 @@ jobs:
             npm run build
           fi
 
-      - name: Add SSH Key
+      - name: Add SSH Key for Deployment
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY_ANKITA }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
+          ssh-keyscan -H 192.168.0.104 >> ~/.ssh/known_hosts  # Ensuring server's key is in known_hosts to avoid verification errors
         env:
           SSH_KEY_ANKITA: ${{ secrets.SSH_KEY_ANKITA }}
 
       - name: Deploy Website
         run: |
-          rsync -avz --delete ./build/ Rani@192.168.0.104:/var/www/website
+          # Use rsync to deploy to server
+          rsync -avz --delete ./build/ Rani@192.168.0.104:/var/www/website  # Replace path if needed
 
       - name: Notify Success
         run: echo "Website successfully updated!"
