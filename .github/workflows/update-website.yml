@@ -33,9 +33,9 @@ jobs:
           SSH_KEY_ANKITA: ${{ secrets.SSH_KEY_ANKITA }}
 
       - name: Deploy Website
-        run: |rsync -avz --delete ./public/ Rani@192.168.0.104:/var/www/website
+        run: |
 
-          rsync -avz --delete ./build/ Rani@192.168.0.104:/var/www/website
+          rsync -avz --delete ./public/ Rani@192.168.0.104:/var/www/website
 
       - name: Notify Success
         run: echo "Website successfully updated!"
