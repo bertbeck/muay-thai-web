@@ -24,12 +24,11 @@ jobs:
             npm run build
           fi
 
-      - name: Add SSH Key and Known Hosts
+      - name: Add SSH Key
         run: |
           mkdir -p ~/.ssh
           echo "${{ secrets.SSH_KEY_ANKITA }}" > ~/.ssh/id_rsa
           chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H 192.168.0.104 >> ~/.ssh/known_hosts
         env:
           SSH_KEY_ANKITA: ${{ secrets.SSH_KEY_ANKITA }}
 
