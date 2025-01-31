@@ -1,29 +1,40 @@
 name: Update Website
+
 on:
   push:
     branches:
-      - main  # Replace with the branch you want to monitor
+      - main  # Replace with your branch if needed
+
 jobs:
   update-website:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Code
         uses: actions/checkout@v3
+
       - name: Install Dependencies
         run: |
           if [ -f package.json ]; then
             npm install
           fi
+
       - name: Build Website
         run: |
           if [ -f package.json ]; then
             npm run build
           fi
+
+      - name: Add SSH Key
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.SSH_KEY_ANKITA }}" > ~/.ssh/id_rsa
+          chmod 600 ~/.ssh/id_rsa
+        env:
+          SSH_KEY_ANKITA: ${{ secrets.SSH_KEY_ANKITA }}
+
       - name: Deploy Website
         run: |
-          rsync -avz --delete ./build/ user@192.168.0.104:/var/www/website
-        env:
-          SSH_PRIVATE_KEY: ${{C:\Users\ankit\.ssh}}
+          rsync -avz --delete ./build/ Rani@192.168.0.104:/var/www/website
+
       - name: Notify Success
         run: echo "Website successfully updated!"
-
