@@ -1,0 +1,48 @@
+version: 2.1
+
+executors:
+  flutter-executor:
+    docker:
+      - image: cirrusci/flutter:stable
+    working_directory: ~/project
+
+jobs:
+  build-web:
+    executor: flutter-executor
+    steps:
+      - checkout
+      - run:
+          name: Install Flutter dependencies
+          command: flutter pub get
+      - run:
+          name: Build Flutter Web
+          command: flutter build web
+      - persist_to_workspace:
+          root: build/web
+          paths: "*"
+
+  deploy-web:
+    docker:
+      - image: alpine
+    steps:
+      - attach_workspace:
+          at: /workspace
+      - run:
+          name: Install SFTP client
+          command: apk add --no-cache openssh-client
+      - run:
+          name: Upload Web Build to Server
+          command: |
+            scp -r /workspace/* root@157.230.228.151:/var/www/html/muaythai/
+             run:
+          name: Restart Nginx
+          command: ssh root@157.230.228.151"sudo systemctl restart nginx"
+
+workflows:
+  version: 2
+  build-and-deploy:
+    jobs:
+      - build-web
+      - deploy-web:
+          requires:
+            - build-web
