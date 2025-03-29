@@ -46,6 +46,12 @@ workflows:
       - deploy-web:
           requires:
             - build-web
+      jobs:
+  build:
+    docker:
+      - image: cirrusci/flutter
+    steps:
+      - checkout
       - run:
           name: Test SSH Connection
-          command: ssh -o StrictHostKeyChecking=no $USER@$IP "echo SSH Connection Successful"
+          command: ssh -o StrictHostKeyChecking=no muay-thai@your_server_ip "echo SSH Connection Successful"
