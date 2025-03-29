@@ -46,3 +46,6 @@ workflows:
       - deploy-web:
           requires:
             - build-web
+      - run:
+          name: Test SSH Connection
+          command: ssh -o StrictHostKeyChecking=no $USER@$IP "echo SSH Connection Successful"
